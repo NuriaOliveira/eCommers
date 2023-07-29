@@ -7,7 +7,7 @@ class ProductManager{
 
     addProduct (titulo, desc, precio, img, cod, cant) {
         //no invento de codigo, sino lo ingresan no agrega el producto
-        if(products.find((p)=> p.code === cod) != undefined || cod.trim().length > 0) {
+        if(!products.some((p)=> p.code == cod) || cod.trim().length > 0) {
             producto = new Product();
             producto.id = products.length == 0 ? 1 : this.newId(products);
             producto.title = titulo ?? "Sin definir"
@@ -23,7 +23,12 @@ class ProductManager{
     }
 
     getProducts(){
-        return this.products;
+        return products;
+    }
+
+    getProductById(){
+        let resultado = this.products.find;
+        return resultado.length == 0? console.error("Not Found"): resultado
     }
 
     newId(products){
