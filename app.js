@@ -9,11 +9,16 @@ class ProductManager{
     }
 
     async addProduct (titulo, desc, precio, img, cod, cant) {
+        //verifico que el archivo  no este vacio
+        let data = await fs.readFile(path, 'utf-8')
+        if(data == 0 )
+            await fs.writeFile(path, JSON.stringify(this.products))
+       
         //no invento de codigo, sino lo ingresan no agrega el producto
-        const prods = JSON.parse(await fs.readFile(path, 'utf-8'))
-        if(!prods.find(p => p.code === cod) || cod.trim().length > 0) {
-            producto = new Product();
-            producto.id = products.length == 0 ? 1 : this.newId(products);
+        this.products = JSON.parse(await fs.readFile(path, 'utf-8'))
+        if(!this.products.find(p => p.code === cod) && cod.trim().length > 0) {
+            const producto = new Product();
+            producto.id = this.newId(this.products);
             producto.title = titulo ?? "Sin definir"
             producto.description = desc ?? "Sin definir"
             producto.price =  precio ?? 0
@@ -21,11 +26,11 @@ class ProductManager{
             producto.code = cod
             producto.stock = cant
 
-            prods.push(producto)
-            await fs.writeFile(path, JSON.stringify(prods))
+            this.products.push(producto)
+            await fs.writeFile(path, JSON.stringify(this.products))
         }
         //en caso de que exista el codido tendría que avisar y no dejar que se agregue
-        console.log("Producto")
+        console.log(this.products)
     }
 
     async getProducts () {
@@ -36,8 +41,9 @@ class ProductManager{
 
     async getProductById(id){
         const prods = JSON.parse(await fs.readFile(path, 'utf-8'))
-        const prod = prods.find(p => p.id === id);
-        return prod? console.error("Not Found"): prod
+        const prod = prods.find(p => p.id == id);
+        //console.log(prod)
+        return prod ?? console.error("Not Found")
     }
 
     async updateProduct(id, product){
@@ -67,12 +73,14 @@ class ProductManager{
             console.error("Not Found")
     }
 
-    newId(products){
+    newId(prods){
         let max = 0;
-        products.foreach((p) => {
+        /*prods.foreach((p) => {
             max = p.id > max? p.id :  max;
-        })
-
+        }) */
+        for(let p of prods){
+            max = p.id > max? p.id :  max;
+        }
         return max + 1;
     }
 }
@@ -89,4 +97,19 @@ class Product{
     }
 }
 
+const operacion = new ProductManager()
+//console.log(operacion.products)
+//operacion.addProduct("Porter Cole - Let's fall in love", "Vinilo", 5841,null,"0840705107495",5)
+//operacion.addProduct("Charles Mingus - Jazz Masters", "Vinilo", 5841,null,"0840705107556",5)
+//operacion.getProducts()
+//console.log(await operacion.getProductById(2))
+/*
+let prod = await operacion.getProductById(1)
 
+prod.title = "que onda?"
+
+
+operacion.updateProduct(2,prod)
+*/
+
+//operacion.deleteProduct(2)
