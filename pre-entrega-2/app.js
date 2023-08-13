@@ -98,7 +98,7 @@ class Product{
 }
 
 const operacion = new ProductManager()
-//console.log(operacion.products)
+console.log(operacion.products)
 //operacion.addProduct("Porter Cole - Let's fall in love", "Vinilo", 5841,null,"0840705107495",5)
 //operacion.addProduct("Charles Mingus - Jazz Masters", "Vinilo", 5841,null,"0840705107556",5)
 //operacion.getProducts()
