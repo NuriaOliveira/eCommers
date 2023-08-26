@@ -23,7 +23,7 @@ cartsRouter.get('/:id', async(req, res) => {
     if(cart)
         res.status(200).send(cart)
     else
-        res.status(404).send("Producto  no encontrado")
+        res.status(404).send("Carrito  no encontrado")
 })
 
 cartsRouter.post('/', async(req, res) => {
