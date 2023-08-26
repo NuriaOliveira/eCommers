@@ -1,36 +1,51 @@
-const pathDatos = '../product.js'
-class ProductManager{
+import {promises as fs} from 'fs'
 
+import { __dirname } from '../path.js'
+import path from  'path'
+
+const pathDatos = path.join(__dirname,'../productos.json') 
+let mensaje = "";
+
+class ProductManager{
+   
 
     constructor(){
         this.products = []
     }
 
-    async addProduct (titulo, desc, precio, img, cod, cant, cat, st) {
-        //verifico que el archivo  no este vacio
-        let data = await fs.readFile(pathDatos, 'utf-8')
-        if(data == 0 )
-            await fs.writeFile(pathDatos, JSON.stringify(this.products))
-       
-        //no invento de codigo, sino lo ingresan no agrega el producto
-        this.products = JSON.parse(await fs.readFile(pathDatos, 'utf-8'))
-        if(!this.products.find(p => p.code === cod) && cod.trim().length > 0) {
-            const producto = new Product();
-            producto.id = this.newId(this.products);
-            producto.title = titulo ?? "Sin definir"
-            producto.description = desc ?? "Sin definir"
-            producto.price =  precio ?? 0
-            producto.thumbnail = img ?? "Sin definir"
-            producto.code = cod
-            producto.stock = cant
-            producto.category = cat
-            producto.status = st
+    async addProduct (product) {
+        try {
+            //verifico que el archivo  no este vacio
+            let data = await fs.readFile(pathDatos, 'utf-8')
+            if(data == 0 )
+                await fs.writeFile(pathDatos, JSON.stringify(this.products))
+        
+            //no invento de codigo, sino lo ingresan no agrega el producto
+            this.products = JSON.parse(await fs.readFile(pathDatos, 'utf-8'))
+            if(!this.products.find(p => p.code === product.code) && product.code.trim().length > 0) {
+                const producto = new Product();
+                producto.id = this.newId(this.products);
+                producto.title = product.title ?? "Sin definir"
+                producto.description = product.description ?? "Sin definir"
+                producto.price =  product.price ?? 0
+                producto.thumbnail = product.thumbnail ?? "Sin definir"
+                producto.code = product.code
+                producto.stock = product.stock
+                producto.category = product.category
+                producto.status = product.status ?? true
 
-            this.products.push(producto)
-            await fs.writeFile(pathDatos, JSON.stringify(this.products))
+                this.products.push(producto)
+                await fs.writeFile(pathDatos, JSON.stringify(this.products))
+
+                return mensaje = "Producto cargado"
+            }
+            //en caso de que exista el codido tendría que avisar y no dejar que se agregue
+            //tengo que ver como lo manejo con errores
+            return mensaje = "Producto existente"
+        } catch (error) {
+            
         }
-        //en caso de que exista el codido tendría que avisar y no dejar que se agregue
-        console.log(this.products)
+        
     }
 
     async getProducts () {
@@ -69,10 +84,10 @@ class ProductManager{
         const prods = JSON.parse(await fs.readFile(pathDatos, 'utf-8'))
         const prod = prods.find(p => p.id === id);
 
-        /*if(prod)
+        if(prod)
             await fs.writeFile(pathDatos, JSON.stringify(prods.filter(p => p.id != id)))
         else
-            console.error("Not Found")*/
+            console.error("Not Found")
 
             return prod
     }
@@ -102,3 +117,5 @@ class Product{
         this.status;
     }
 }
+
+export default ProductManager
