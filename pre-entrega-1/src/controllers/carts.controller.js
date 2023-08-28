@@ -3,6 +3,7 @@ import {promises as fs} from 'fs'
 import { __dirname } from '../path.js'
 import path from  'path'
 
+
 const pathDatos = path.join(__dirname,'../carritos.json') 
 let mensaje = "";
 
@@ -50,7 +51,7 @@ class CartManager{
         const carts = JSON.parse(await fs.readFile(pathDatos, 'utf-8'))
         const cart = carts.find(p => p.id === id);
         //console.log(cart)
-        return cart ?? console.error("Not Found")
+        return cart ?? false
     }
 
     async updateCart(id, cart){
@@ -67,6 +68,7 @@ class CartManager{
             await fs.writeFile(pathDatos, JSON.stringify(carts))
         }
     }
+
 
     async deleteProduct(id){
         const carts = JSON.parse(await fs.readFile(pathDatos, 'utf-8'))
@@ -99,5 +101,6 @@ class Cart{
         this.quantity ;
     }
 }
+
 
 export default CartManager

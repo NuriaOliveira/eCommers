@@ -33,6 +33,16 @@ cartsRouter.post('/', async(req, res) => {
     res.status(200).send(carts)
 })
 
+cartsRouter.post('/:cid/products/:pid', async (req, res) => {
+    const { cid, pid} = req.params
+    const cart = JSON.parse(`{"product": ${pid}, "quatity": 1}`)
+    if( await cartManager.getCartById(parseInt(cid))){
+        await cartManager.updateCart(parseInt(cid),cart)
+    }else{
+        res.status(404).send("Carrito no encontrado")
+    }
+})
+
 cartsRouter.put('/:id', async(req, res) => {
     const {id} = req.params
 
